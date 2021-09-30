@@ -14,8 +14,12 @@ import boto3
 def get_lambda_functions_code_url():
 
     client = boto3.client("lambda")
-
-    lambda_functions = [n["FunctionName"] for n in client.list_functions()["Functions"]]
+    functions = ret_result["Functions"]
+    while "NextMarker" in ret_result: 
+        # print(ret_result)
+        ret_result = client.list_functions(Marker=ret_result["NextMarker"])
+        functions.extend(ret_result["Functions"])
+    lambda_functions = [n["FunctionName"] for n in functions]
 
     functions_code_url = []
 
